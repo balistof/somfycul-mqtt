@@ -6,7 +6,7 @@ import json, serial, sys
 from datetime import datetime
 
 broker = "localhost"
-allowedCommands = {"UP", "DOWN", "MY", "UNDEF"}
+allowedCommands = {"UP", "DOWN", "MY"}
 actionMap = {
     "UP": "2",
     "DOWN": "4",
