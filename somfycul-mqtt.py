@@ -34,6 +34,7 @@ def handle_somfy_command(shutterName, shutterCommand):
   print ("sending: " + culCommand)
   port.write("Yr2\n".encode())
   port.write((culCommand + "\n").encode())
+  time.sleep(3) # needed to propate over serial
 
   # write properties file
   with open(fileName, 'w') as json_file:
@@ -56,11 +57,11 @@ def on_disconnect(client, empty, rc):
 
 def on_message(client, userdata, message):
   try:
-    print("message received: {}".format(str(message.payload.decode("utf-8"))))
+    payload = str(message.payload.decode("utf-8"))
+    print("message received: {}".format(str(payload)))
     print("message topic: {}".format(message.topic))
-    payload = json.loads(message.payload.decode("utf-8"))
-    shutter = payload["shutter"]
-    command = payload["command"]
+    shutter = message.topic[len("somfycul/command/"):]
+    command = payload
     if shutter is None or command not in allowedCommands:
       print("ignoring command: {} for shutter: {}".format(command, shutter))
       return
@@ -86,7 +87,7 @@ def main():
   client.connect(broker)
   client.loop_start()
   print("subscribing")
-  client.subscribe("somfycul/command")
+  client.subscribe("somfycul/command/#")
   print("mqtt client started")
 
   atexit.register(on_kill, client)
