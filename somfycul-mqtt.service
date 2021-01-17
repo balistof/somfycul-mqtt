@@ -1,0 +1,13 @@
+[Unit]
+Description=Python bridge from MQTT to Somfy CUL
+Documentation=https://github.com/balistof/somfycul-mqtt
+After=openhab.service
+
+[Service]
+Type=simple
+ExecStart=/opt/somfycul-mqtt/somfycul-mqtt.py
+WorkingDirectory=/opt/somfycul-mqtt
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
